@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import JSZip from 'jszip'
+import { Helmet } from 'react-helmet-async'
 import {
   Lock,
   Unlock,
@@ -14,6 +15,7 @@ import {
 import Dropzone from '../../components/Dropzone.jsx'
 import Button from '../../components/ui/Button.jsx'
 import Select from '../../components/ui/Select.jsx'
+import AdBanner from '../../components/AdBanner.jsx'
 import { downloadBlob, baseName, formatBytes } from '../../lib/download.js'
 import {
   PRESETS,
@@ -27,17 +29,27 @@ import {
 let uid = 0
 const nextId = () => `img-${++uid}-${Date.now()}`
 
-export default function ResizerTool() {
+export default function ResizerTool({ 
+  customTitle, 
+  customDesc, 
+  defaultWidth = 1024, 
+  defaultHeight = 768, 
+  defaultPresetIndex = 0, 
+  defaultQuality = 0.85 
+}) {
   const [items, setItems] = useState([])
   const [unit, setUnit] = useState('px')
-  const [width, setWidth] = useState(1024)
-  const [height, setHeight] = useState(768)
+  const [width, setWidth] = useState(defaultWidth)
+  const [height, setHeight] = useState(defaultHeight)
   const [lastEdited, setLastEdited] = useState('width')
   const [lockAspect, setLockAspect] = useState(true)
   const [percent, setPercent] = useState(50)
-  const [presetIndex, setPresetIndex] = useState(0)
+  const [presetIndex, setPresetIndex] = useState(defaultPresetIndex)
   const [formatKey, setFormatKey] = useState('original')
-  const [quality, setQuality] = useState(0.85)
+  const [quality, setQuality] = useState(defaultQuality)
+
+  const title = customTitle || 'Free Online Image Resizer for Job Applications & Exams'
+  const desc = customDesc || 'Resize photos to exact pixels or percentage for job portals, university admissions, and ID cards. Everything runs locally in your browser — your images are never uploaded.'
   const [preventUpscale, setPreventUpscale] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
   const firstImageRef = useRef(true)
@@ -179,11 +191,18 @@ export default function ResizerTool() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <Helmet>
+        <title>{title} (100% Private)</title>
+        <meta name="description" content={desc} />
+      </Helmet>
       <div className="mb-8 text-center">
-        <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">Resize images, exactly how you need them</h2>
+        <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{title}</h1>
         <p className="mx-auto mt-2 max-w-2xl text-slate-500">
-          Batch resize by pixels or percentage with high-quality Lanczos filtering. Everything runs locally in your browser.
+          {desc}
         </p>
+        <div className="mt-6">
+          <AdBanner options={{ key: '1d21efbd0ebce1b68eb923a243d080b5', format: 'iframe', height: 90, width: 728, params: {} }} />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[340px_1fr]">
@@ -338,6 +357,9 @@ export default function ResizerTool() {
               <>Resize {items.length ? `${items.length} image${items.length > 1 ? 's' : ''}` : 'images'}</>
             )}
           </Button>
+          <div className="mt-6">
+            <AdBanner options={{ key: 'd18c853ae1b75bbdf50babef60dd5460', format: 'iframe', height: 50, width: 320, params: {} }} />
+          </div>
         </aside>
 
         {/* Queue */}
@@ -369,6 +391,29 @@ export default function ResizerTool() {
               </div>
             </>
           )}
+        </div>
+      </div>
+
+      {/* SEO & Trust Content Section */}
+      <div className="mt-16 rounded-2xl bg-white p-8 shadow-sm border border-slate-200">
+        <div className="mb-8 text-center">
+          <h2 className="text-xl font-bold text-slate-900">Why Use Our Tool for Official Documents?</h2>
+          <p className="mt-2 text-slate-500">Perfect for students, job seekers, and administrators.</p>
+        </div>
+        
+        <div className="grid gap-8 md:grid-cols-3">
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800">100% Private & Secure</h3>
+            <p className="mt-2 text-sm text-slate-600">Unlike other tools, our image resizer runs entirely in your browser. Your photos are never uploaded to a server, making it completely safe for sensitive ID cards and passport photos.</p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800">Job Application Ready</h3>
+            <p className="mt-2 text-sm text-slate-600">Most ATS (Applicant Tracking Systems) and university portals have strict limits (e.g., exactly 600x600 pixels or under 100KB). Use our exact pixel resizing and quality slider to meet these requirements instantly.</p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-800">Fast Bulk Processing</h3>
+            <p className="mt-2 text-sm text-slate-600">Need to resize 50 employee photos? Drag and drop them all at once. Our client-side processing handles bulk resizing in seconds, directly from your computer's memory.</p>
+          </div>
         </div>
       </div>
     </div>
