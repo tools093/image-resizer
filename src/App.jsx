@@ -9,6 +9,7 @@ export default function App() {
       <Header />
       <main className="flex-1">
         <Routes>
+          
           <Route path="/" element={<ResizerTool />} />
           <Route path="/job-application-photo-resizer" element={
             <ResizerTool 
